@@ -1,0 +1,6 @@
+spacy
+grpcio
+hvac
+google-api-python-client
+elasticsearch==6.8.0
+boto3

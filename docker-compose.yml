@@ -1,0 +1,44 @@
+version: "3"
+services:
+  analyser:
+    depends_on:
+      - trainer
+    build:
+      context: .
+      args:
+        PROG: analyser
+    ports:
+      - "50051:50051"
+    environment:
+      ENV: local
+      BUCKET: support-analytics-engine-local
+      VAULT_ROLE_ID: $VAULT_ROLE_ID
+      VAULT_SECRET_ID: $VAULT_SECRET_ID
+      VAULT_URL: $VAULT_ADDR
+    volumes:
+      - .:/app
+    networks:
+      - support-analytics_support-network
+  trainer:
+    build:
+      context: .
+      args:
+        PROG: trainer
+    ports:
+      - "8280:8280"
+    environment:
+      ENV: local
+      BUCKET: support-analytics-engine-local
+      ELASTIC_URL: http://elasticsearch:9200
+      VAULT_ROLE_ID: $VAULT_ROLE_ID
+      VAULT_SECRET_ID: $VAULT_SECRET_ID
+      VAULT_URL: $VAULT_ADDR
+      N_ITER: 4
+    volumes:
+      - .:/app
+    networks:
+      - support-analytics_support-network
+
+networks:
+  support-analytics_support-network:
+    external: true
